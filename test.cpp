@@ -2,7 +2,12 @@
 #include <iostream>     // std::cout
 #include <sstream>      // std::stringstream
 
-#include "parse.cpp"
+#include "node.h"
+#include "root.h"
+
+Node createTrie();
+int scanFile(std::string path);
+void scanTrie(Node &n);
 
 int main(int argc, char *argv[]) {
 	if (argc < 2) {
@@ -10,7 +15,11 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
+	createTrie();
+
 	scanFile(argv[1]);
+
+	scanTrie(root);
 
 	return 0;
 }
