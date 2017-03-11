@@ -71,13 +71,16 @@
   </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="edge.h" />
+    <ClInclude Include="record.h" />
     <ClInclude Include="node.h" />
-    <ClInclude Include="root.h" />
+    <ClInclude Include="srv.h" />
+    <ClInclude Include="trie.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="edge.cpp" />
     <ClCompile Include="node.cpp" />
     <ClCompile Include="parse.cpp" />
+    <ClCompile Include="record.cpp" />
     <ClCompile Include="trie.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="util.cpp" />

@@ -1,16 +1,16 @@
 #pragma once
 
-class Node;
+#include "node.h"
 
 class Edge {
 public:
-	Edge(std::string label);
+	Edge(std::string label, Node *n);
 	~Edge();
 
-	int setTargetNode(Node &n);
+	int setTargetNode(Node *n);
 
 	std::string getLabel();
-	Node getTargetNode();
+	Node *getTargetNode();
 
 	bool operator < (const Edge &b) const { return label < b.label;  }
 

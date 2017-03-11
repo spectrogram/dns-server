@@ -3,11 +3,13 @@
 #include <sstream>      // std::stringstream
 
 #include "node.h"
-#include "root.h"
+#include "trie.h"
+#include "record.h"
 
-Node createTrie();
+Trie t = Trie();
+
 int scanFile(std::string path);
-void scanTrie(Node &n);
+int compareStrings(std::string a, std::string b);
 
 int main(int argc, char *argv[]) {
 	if (argc < 2) {
@@ -15,11 +17,9 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	createTrie();
-
 	scanFile(argv[1]);
 
-	scanTrie(root);
+	t.scanTrie(t.getRoot());	
 
 	return 0;
 }

@@ -3,52 +3,30 @@
 #include <vector>
 #include <stdbool.h>
 #include <algorithm>
+#include <memory>
 
+#include "record.h"
 class Edge;
-
-enum NodeType { None, Record, ZoneAuth };
 
 class Node {
 public:
-	int setName(std::string n);
-	int setContent(std::string c);
-	int setType(NodeType ty);
-	int setTtl(int time);
-	int setPriority(int p);
-
-	bool isIndex();
-	int getIndex();
-	int setIndex(int i);
-	bool setIfIndex(bool ind);
-
 	bool isLeaf();
+	int getIndex();
+	std::vector<std::unique_ptr<Edge>> &getEdges();
+	std::vector<std::unique_ptr<Record>> &getRecords();
 
-	int addEdge(Edge e);
+	int setIndex();
+	int addEdge(std::unique_ptr<Edge> e);
+	int addRecord(std::unique_ptr<Record> r);
 
-	std::string getName();
-	std::string getContent();
-	NodeType getType();
-	int getTtl();
-	std::vector<Edge> getEdges();
-	int getPriority();
-	void printNode() const;
-
-	bool comparator(const Node & a);
-
+	Node(int i, bool l);
 	Node();
-	Node(std::string n, std::string c, int tt, NodeType ty);
 	~Node();
 
-private:
-	std::vector<Edge> edges;
-
-	NodeType type;
-	std::string name;
-	std::string content;
-	int ttl;
-	int priority;
-
-	bool index;
-	int indexNum;
+protected:
+	bool leaf;
+	int index;
+	std::vector<std::unique_ptr<Edge>> edges;
+	std::vector<std::unique_ptr<Record>> records;
 };
 

@@ -1,106 +1,51 @@
 #include <string>
 #include <iostream>
+#include <vector>
+#include <functional>
 
 #include "node.h"
 #include "edge.h"
 
-int Node::setName(std::string n) {
-	name = n;
-	return 0;
-}
-
-int Node::setContent(std::string c) {
-	content = c;
-	return 0;
-}
-
-int Node::setType(NodeType ty) {
-	type = ty;
-	return 0;
-}
-
-int Node::setTtl(int time) {
-	ttl = time;
-	return 0;
-}
-
-int Node::setPriority(int p) {
-	priority = p;
-	return 0;
-}
-
 bool Node::isLeaf() {
-	return false;
-}
-
-int Node::addEdge(Edge e) {
-	
-
-	edges.push_back(e);
-	// std::sort(edges.begin(), edges.end());
-
-	return 0;
-}
-
-bool Node::isIndex() {
-	return index;
+	return leaf;
 }
 
 int Node::getIndex() {
-	return indexNum;
+	return index;
 }
 
-int Node::setIndex(int i) {
-	indexNum = i;
-	return 0;
-}
-
-bool Node::setIfIndex(bool ind) {
-	index = ind;
-}
-
-std::string Node::getName() {
-	return name;
-}
-
-std::string Node::getContent() {
-	return content;
-}
-
-NodeType Node::getType() {
-	return type;
-}
-
-int Node::getTtl() {
-	return ttl;
-}
-
-std::vector<Edge> Node::getEdges() {
+std::vector<std::unique_ptr<Edge>> &Node::getEdges() {
 	return edges;
 }
 
-int Node::getPriority() {
-	return priority;
+std::vector<std::unique_ptr<Record>> &Node::getRecords() {
+	return records;
 }
 
-void Node::printNode() const {
-	std::cout << "Name:" << name << std::endl;
-	std::cout << "Content:" << content << std::endl;
-	std::cout << "Type:" << type << std::endl;
+int Node::addEdge(std::unique_ptr<Edge> e) {
+	edges.push_back(std::move(e));
+	return 0;
 }
 
-bool Node::comparator(const Node & a) {
-	return name < a.name;
+int Node::addRecord(std::unique_ptr<Record> r) {
+	records.push_back(std::move(r));
+	std::cout << "Size of records vector is now: " << records.size() << std::endl;
+
+	for (std::vector<std::unique_ptr<Record>>::iterator it2 = records.begin(); it2 != records.end(); it2++) {
+		std::cout << "CURRENT RECORD NAME: " << (*it2)->getName() << std::endl;
+		std::cout << "CURRENT CONTENT NAME: " << (*it2)->getContent() << std::endl;
+		std::cout << "CURRENT RECORD TYPE: " << (*it2)->getType() << std::endl;
+	}
+
+	return 0;
+}
+
+Node::Node(int i, bool l) {
+	index = i;
+	leaf = l;
 }
 
 Node::Node() {
-}
-
-Node::Node(std::string n, std::string c, int tt, NodeType ty) {
-	name = n;
-	content = c;
-	ttl = tt;
-	type = ty;
 }
 
 Node::~Node() {
