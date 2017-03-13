@@ -48,23 +48,3 @@ std::string concatDomain(std::vector<std::string> domain) {
 	s = s.substr(0, s.size() - 1);
 	return s;
 }
-
-int compareStrings(std::string a, std::string b) {
-	int len;
-
-	len = std::min(a.length(), b.length());
-
-	for (int i = 0; i < len; i++) {
-		if (a[i] == b[i]) {
-			continue;
-		} else {
-			return i;
-		}
-	}
-
-	return len;
-}
-
-int compSimilarity(std::unique_ptr<Edge> const &a, std::unique_ptr<Edge> const &b) {
-	return compareStrings(a->getLabel(), b->getLabel());
-}

@@ -27,8 +27,6 @@ int scanFile(std::string path) {
 	while (std::getline(input, currLine)) {
 		std::vector<std::string> record;
 
-		std::cout << currLine << std::endl;
-
 		record = split(currLine, ' ');
 
 		std::string n = record[0].substr(0, record[0].size() - 1);
@@ -36,13 +34,11 @@ int scanFile(std::string path) {
 		int tt = atoi(record[1].c_str());
 
 		if (record[3].compare("A") == 0) {
-			std::cout << "A RECORD" << currLine << std::endl;
 			std::unique_ptr<Record> newRecord (new Record(n, c, tt, A));
 			t.addRecord(std::move(newRecord), t.getRoot(), 0);
 		}
 
 		if (record[3].compare("NS") == 0) {
-			std::cout << "NS RECORD" << currLine << std::endl;
 			std::unique_ptr<Record> newRecord(new Record(n, c, tt, NS));
 			t.addRecord(std::move(newRecord), t.getRoot(), 0);
 		}
