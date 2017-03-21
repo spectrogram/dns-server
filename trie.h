@@ -22,6 +22,7 @@ public:
 	Node &getRoot();
 
 	void scanTrie(Node &curr);
+	int trimTrie(Node &curr);
 
 private:
 	Node* root;

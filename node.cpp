@@ -29,13 +29,13 @@ int Node::addEdge(std::unique_ptr<Edge> e) {
 
 int Node::addRecord(std::unique_ptr<Record> r) {
 	records.push_back(std::move(r));
-	std::cout << "Size of records vector is now: " << records.size() << std::endl;
+	//std::cout << "Size of records vector is now: " << records.size() << std::endl;
 
-	for (std::vector<std::unique_ptr<Record>>::iterator it2 = records.begin(); it2 != records.end(); it2++) {
-		std::cout << "CURRENT RECORD NAME: " << (*it2)->getName() << std::endl;
-		std::cout << "CURRENT CONTENT NAME: " << (*it2)->getContent() << std::endl;
-		std::cout << "CURRENT RECORD TYPE: " << (*it2)->getType() << std::endl;
-	}
+	//for (std::vector<std::unique_ptr<Record>>::iterator it2 = records.begin(); it2 != records.end(); it2++) {
+	//	std::cout << "CURRENT RECORD NAME: " << (*it2)->getName() << std::endl;
+	//	std::cout << "CURRENT CONTENT NAME: " << (*it2)->getContent() << std::endl;
+	//	std::cout << "CURRENT RECORD TYPE: " << (*it2)->getType() << std::endl;
+	//}
 
 	return 0;
 }

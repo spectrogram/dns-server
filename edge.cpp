@@ -25,6 +25,3 @@ Node* Edge::getTargetNode() {
 	return target;
 }
 
-//bool Edge::comparator(const Edge & a) {
-//	return label < a.label;
-//}

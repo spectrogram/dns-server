@@ -70,6 +70,7 @@
     <RemoteBuildCommandLine>g++ -g ~/projects/fakeblock/test.cpp</RemoteBuildCommandLine>
   </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="compareStrings.h" />
     <ClInclude Include="edge.h" />
     <ClInclude Include="record.h" />
     <ClInclude Include="node.h" />

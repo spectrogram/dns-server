@@ -18,6 +18,7 @@ std::vector<std::string> splitDomain(std::string domain);
 std::vector<std::string> split(const std::string &s, char delim);
 std::string concatDomain(std::vector<std::string> domain);
 
+
 int scanFile(std::string path) {
 	std::ifstream input(path.c_str());
 
@@ -43,6 +44,9 @@ int scanFile(std::string path) {
 			t.addRecord(std::move(newRecord), t.getRoot(), 0);
 		}
 
+
+		std::cout << " ===================== SCANNING TRIE NOW! " << std::endl;
+		t.scanTrie(t.getRoot());
 
 	}
 

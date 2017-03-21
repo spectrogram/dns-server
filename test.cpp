@@ -31,6 +31,7 @@ int main(int argc, char *argv[]) {
 	
 	scanFile(argv[1]);
 
+	//t.trimTrie(t.getRoot());
 	std::cout << " ===================== SCANNING TRIE NOW! " << std::endl;
 	t.scanTrie(t.getRoot());	
 
