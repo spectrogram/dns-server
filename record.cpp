@@ -32,6 +32,10 @@ int Record::setType(RecordType newType) {
 	return 0;
 }
 
+Record Record::returnCopy() {
+	return Record(this->name, this->content, this->ttl, this->type);
+}
+
 Record::Record(std::string n, std::string c, int tt, RecordType rec) {
 	name = n;
 	content = c;

@@ -18,6 +18,8 @@ public:
 	int setTtl(int newTtl);
 	int setType(RecordType newType);
 
+	Record returnCopy();
+
 	Record(std::string n, std::string c, int ttl , RecordType rec);
 	~Record();
 

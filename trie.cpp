@@ -70,8 +70,8 @@ int Trie::addRecord(std::unique_ptr<Record> r, Node & next, int index) {
 		std::cout << "Inserting a record at node " << bestMatch->getTargetNode() << std::endl;
 		bestMatch->getTargetNode()->addRecord(std::move(r));
 		return 0;
-	} else if (bestMatch->getLabel().length() > std::get<0>(result)) {
-		// we need to split this non-leaf node 
+	} else if (bestMatch->getLabel().length() > std::get<0>(result) || bestMatch->getTargetNode()->isLeaf()) {
+		// split this node 
 		std::cout << "Entered split (non leaf)" << std::endl;
 		std::cout << "Result is " << std::get<1>(result) << std::endl;
 
@@ -114,50 +114,6 @@ int Trie::addRecord(std::unique_ptr<Record> r, Node & next, int index) {
 			std::cout << "CURRENT EDGE NAME: " << (*itn)->getLabel() << std::endl;
 		}
 
-	} else if (bestMatch->getTargetNode()->isLeaf()) {
-		// existing node needs to be under a prefix shared by new node 
-		// we need to split the existing node
-		std::cout << "Entered split " << std::endl;
-		std::cout << "Result is " << std::get<1>(result) << std::endl;
-
-		int newIndex = compareFunc(bestMatch->getLabel(), label, index);
-
-		// create new node for prefix
-		Node *newNodePrefix = new Node(newIndex, false);
-
-		// create new edge from prefix node to target node
-		// and add to prefix node
-		std::string currEdgeName = bestMatch->getLabel().substr(0, newIndex);
-		std::cout << currEdgeName << " is new prefix edge name with index " << newIndex << std::endl;
-		std::unique_ptr<Edge> newEdge(new Edge(bestMatch->getLabel(), bestMatch->getTargetNode()));
-		newNodePrefix->addEdge(std::move(newEdge));
-
-		// wipe old edge from edges vector of current node
-		std::vector<std::unique_ptr<Edge>>::iterator pos = nEdges.begin() + std::get<1>(result);
-		std::cout << "Label of edge being removed is: " << (*pos)->getLabel() << std::endl;
-		nEdges.erase(pos);
-		//bestMatch.reset();
-
-		// create new node for records we're currently trying to put in
-		// and insert the records too...
-		Node *newNode = new Node(label.length(), true);
-		newNode->addRecord(std::move(r));
-
-		// add edge from prefix node to new node
-		// and add to current node
-		std::unique_ptr<Edge> newEdge2(new Edge(label, newNode));
-		newNodePrefix->addEdge(std::move(newEdge2));
-
-		// finally, create new edge from current node to prefix node
-		std::unique_ptr<Edge> newEdge3(new Edge(currEdgeName, newNodePrefix));
-		std::cout << "New edge from curr node to prefix node is: " << newEdge3->getLabel() << std::endl;
-
-		next.addEdge(std::move(newEdge3));
-		std::cout << "Size of EDGES vector for next node: " << next.getEdges().size() << std::endl;
-		// std::cout << "New edge from curr node to prefix node is: " << newEdge3->getLabel() << std::endl;
-		for (std::vector<std::unique_ptr<Edge>>::const_iterator itn = next.getEdges().begin(); itn != next.getEdges().end(); itn++) {
-			std::cout << "CURRENT EDGE NAME: " << (*itn)->getLabel() << std::endl;
-		}
 	} else {
 		// recurse into the non-leaf node
 		std::cout << "Recursing into non-leaf node " << bestMatch->getLabel() << std::endl;
@@ -168,8 +124,27 @@ int Trie::addRecord(std::unique_ptr<Record> r, Node & next, int index) {
 	return 0;
 }
 
-Record &Trie::lookup(std::string search) {
+Record &Trie::lookup(std::string search, RecordType type, Node & next, int index) {
 	std::string label = concatDomain(splitDomain(search));
+	std::vector<Record> results;
+
+	// first look for the matching node
+	std::vector<std::unique_ptr<Edge>> &nEdges = next.getEdges();
+
+	if (nEdges.empty()) {
+		throw "Trie is empty!";
+	}
+
+	std::tuple<int, int> result = findBestMatch(nEdges, label, index);
+
+	std::unique_ptr<Edge> &bestMatch = nEdges.at(std::get<1>(result));
+
+	if (label == bestMatch->getLabel()) {
+		std::vector<std::unique_ptr<Record>> r = bestMatch->getTargetNode()->getRecords();
+		for (std::vector<std::unique_ptr<Record>>::const_iterator it = r.begin(); it != r.end(); it++) {
+			results.push_back((*it)->returnCopy());
+		}
+	}
 
 }
 
