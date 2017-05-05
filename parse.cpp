@@ -30,6 +30,10 @@ int scanFile(std::string path) {
 
 		record = split(currLine, ' ');
 
+		if (record.size() < 4) {
+			return 1;
+		}
+
 		std::string n = record[0].substr(0, record[0].size() - 1);
 		std::string c = record[4];
 		int tt = atoi(record[1].c_str());
@@ -43,10 +47,6 @@ int scanFile(std::string path) {
 			std::unique_ptr<Record> newRecord(new Record(n, c, tt, NS));
 			t.addRecord(std::move(newRecord), t.getRoot(), 0);
 		}
-
-
-		std::cout << " ===================== SCANNING TRIE NOW! " << std::endl;
-		t.scanTrie(t.getRoot());
 
 	}
 

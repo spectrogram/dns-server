@@ -21,19 +21,23 @@ int main(int argc, char *argv[]) {
 
 	DIR *pDir;
 	struct dirent *entry;
+	std::string fullpath;
+
 	if (pDir = opendir(argv[1])) {
 		while (entry = readdir(pDir)) {
 			if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
-				std::cout << entry->d_name << "\n";
+				fullpath = std::string(argv[1]) + std::string(entry->d_name);
+				std::cout << fullpath << "\n";
+				scanFile(fullpath);
 		}
 		closedir(pDir);
 	}
 	
-	scanFile(argv[1]);
+	
 
 	//t.trimTrie(t.getRoot());
 	std::cout << " ===================== SCANNING TRIE NOW! " << std::endl;
-	t.scanTrie(t.getRoot());	
+	t.scanTrie(t.getRoot());
 
 	return 0;
 }

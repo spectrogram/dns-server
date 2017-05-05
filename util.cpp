@@ -93,6 +93,6 @@ std::tuple<int, int> findBestMatch(std::vector<std::unique_ptr<Edge>> const &v, 
 	return std::make_tuple(currMax, pos);
 }
 
-std::string longestCommonSubstring(std::vector<std::unique_ptr<Edge>> const &v) {
-
-}
+//std::string longestCommonSubstring(std::vector<std::unique_ptr<Edge>> const &v) {
+//
+//}
