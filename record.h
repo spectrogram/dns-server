@@ -3,31 +3,30 @@
 #include <vector>
 #include <stdbool.h>
 #include <algorithm>
-
-enum RecordType { A, AAAA, CNAME, TXT, NS, SRV, MX, SOA };
+#include <tins/tins.h>
 
 class Record {
 public:
 	std::string getName();
 	std::string getContent();
 	int getTtl();
-	RecordType getType();
+	Tins::DNS::QueryType getType();
 
 	int setName(std::string newName);
 	int setContent(std::string newContent);
 	int setTtl(int newTtl);
-	int setType(RecordType newType);
+	int setType(Tins::DNS::QueryType newType);
 
 	Record returnCopy();
 
-	Record(std::string n, std::string c, int ttl , RecordType rec);
+	Record(std::string n, std::string c, int ttl , Tins::DNS::QueryType rec);
 	~Record();
 
 protected:
 	std::string name;
 	std::string content;
 	int ttl;
-	RecordType type;
+	Tins::DNS::QueryType type;
 
 };
 

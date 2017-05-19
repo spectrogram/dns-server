@@ -12,7 +12,7 @@ int Record::getTtl() {
 	return ttl;
 }
 
-RecordType Record::getType() {
+Tins::DNS::QueryType Record::getType() {
 	return type;
 }
 
@@ -28,7 +28,7 @@ int Record::setTtl(int newTtl) {
 	return 0;
 }
 
-int Record::setType(RecordType newType) {
+int Record::setType(Tins::DNS::QueryType newType) {
 	return 0;
 }
 
@@ -36,7 +36,7 @@ Record Record::returnCopy() {
 	return Record(this->name, this->content, this->ttl, this->type);
 }
 
-Record::Record(std::string n, std::string c, int tt, RecordType rec) {
+Record::Record(std::string n, std::string c, int tt, Tins::DNS::QueryType rec) {
 	name = n;
 	content = c;
 	ttl = tt;

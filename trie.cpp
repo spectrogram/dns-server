@@ -14,6 +14,7 @@
 #include "record.h"
 #include "edge.h"
 #include "trie.h"
+#include "util.h"
 
 extern Trie t;
 
@@ -124,9 +125,11 @@ int Trie::addRecord(std::unique_ptr<Record> r, Node & next, int index) {
 	return 0;
 }
 
-Record &Trie::lookup(std::string search, RecordType type, Node & next, int index) {
+std::vector<Record> Trie::lookup(std::string search, Tins::DNS::QueryType type, Node & next, int index) {
 	std::string label = concatDomain(splitDomain(search));
 	std::vector<Record> results;
+
+	std::cout << "The search label is " << label << std::endl;
 
 	// first look for the matching node
 	std::vector<std::unique_ptr<Edge>> &nEdges = next.getEdges();
@@ -140,10 +143,39 @@ Record &Trie::lookup(std::string search, RecordType type, Node & next, int index
 	std::unique_ptr<Edge> &bestMatch = nEdges.at(std::get<1>(result));
 
 	if (label == bestMatch->getLabel()) {
-		std::vector<std::unique_ptr<Record>> r = bestMatch->getTargetNode()->getRecords();
-		for (std::vector<std::unique_ptr<Record>>::const_iterator it = r.begin(); it != r.end(); it++) {
-			results.push_back((*it)->returnCopy());
+		// full match
+		// loop through records for this node and get records that match record type
+		std::vector<std::unique_ptr<Record>> r;
+		bestMatch->getTargetNode()->getRecords();
+
+		for (const auto& e : bestMatch->getTargetNode()->getRecords()) {
+			r.push_back(util::make_unique<Record>(*e));
 		}
+
+		for (std::vector<std::unique_ptr<Record>>::const_iterator it = r.begin(); it != r.end(); it++) {
+			if ((*it)->getType() == type) { 
+				results.push_back((*it)->returnCopy());
+			}
+		}
+		return results;
+	} else if (!bestMatch->getTargetNode()->isLeaf()) {
+		Node *n = bestMatch->getTargetNode();
+		return lookup(search, type, (*n), std::get<0>(result));
+	} else {
+		// case to return best match if there is no exact match
+		std::vector<std::unique_ptr<Record>> r; 
+		bestMatch->getTargetNode()->getRecords();
+
+		for (const auto& e : bestMatch->getTargetNode()->getRecords()) {
+			r.push_back(util::make_unique<Record>(*e));
+		}
+
+		for (std::vector<std::unique_ptr<Record>>::const_iterator it = r.begin(); it != r.end(); it++) {
+			if ((*it)->getType() == type) {
+				results.push_back((*it)->returnCopy());
+			}
+		}
+		return results;
 	}
 
 }

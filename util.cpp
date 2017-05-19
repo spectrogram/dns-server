@@ -85,7 +85,7 @@ std::tuple<int, int> findBestMatch(std::vector<std::unique_ptr<Edge>> const &v, 
 		int comp = compareFunc(currLabel, l, index);
 		if (comp > currMax) {
 			currMax = comp;
-			std::cout << "currmax is " << currMax << std::endl;
+			// std::cout << "currmax is " << currMax << std::endl;
 			pos = it - v.begin();
 		}
 	}

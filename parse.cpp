@@ -39,12 +39,12 @@ int scanFile(std::string path) {
 		int tt = atoi(record[1].c_str());
 
 		if (record[3].compare("A") == 0) {
-			std::unique_ptr<Record> newRecord (new Record(n, c, tt, A));
+			std::unique_ptr<Record> newRecord (new Record(n, c, tt, Tins::DNS::A));
 			t.addRecord(std::move(newRecord), t.getRoot(), 0);
 		}
 
 		if (record[3].compare("NS") == 0) {
-			std::unique_ptr<Record> newRecord(new Record(n, c, tt, NS));
+			std::unique_ptr<Record> newRecord(new Record(n, c, tt, Tins::DNS::NS));
 			t.addRecord(std::move(newRecord), t.getRoot(), 0);
 		}
 
