@@ -91,6 +91,8 @@
   <ItemGroup>
     <ClInclude Include="compareStrings.h" />
     <ClInclude Include="edge.h" />
+    <ClInclude Include="mx.h" />
+    <ClInclude Include="soa.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="record.h" />
     <ClInclude Include="node.h" />
@@ -99,15 +101,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="edge.cpp" />
+    <ClCompile Include="mx.cpp" />
     <ClCompile Include="node.cpp" />
     <ClCompile Include="parse.cpp" />
     <ClCompile Include="record.cpp" />
+    <ClCompile Include="soa.cpp" />
+    <ClCompile Include="srv.cpp" />
     <ClCompile Include="trie.cpp" />
     <ClCompile Include="test.cpp" />
     <ClCompile Include="util.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemDefinitionGroup />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

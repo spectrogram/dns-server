@@ -15,7 +15,9 @@ public:
 	~Trie();
 
 	int addRecord(std::unique_ptr<Record> r, Node &next, int index);
+
 	std::vector<Record> lookup(std::string search, Tins::DNS::QueryType type, Node & next, int index);
+
 	int deleteRecord(Record *r);
 	int updateRecord(Record *r);
 

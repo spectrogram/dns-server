@@ -36,6 +36,7 @@ Node & Trie::getRoot() {
 
 int Trie::addRecord(std::unique_ptr<Record> r, Node & next, int index) {
 	std::string label = concatDomain(splitDomain(r->getName()));
+	std::cout << "CURRENT OBJECT: " << typeid(r).name() << std::endl;
 	std::cout << "Label is " << label << std::endl;
 
 	std::vector<std::unique_ptr<Edge>> &nEdges = next.getEdges();
@@ -153,7 +154,7 @@ std::vector<Record> Trie::lookup(std::string search, Tins::DNS::QueryType type, 
 		}
 
 		for (std::vector<std::unique_ptr<Record>>::const_iterator it = r.begin(); it != r.end(); it++) {
-			if ((*it)->getType() == type) { 
+			if ((*it)->getType() == type) {
 				results.push_back((*it)->returnCopy());
 			}
 		}
@@ -180,6 +181,61 @@ std::vector<Record> Trie::lookup(std::string search, Tins::DNS::QueryType type, 
 
 }
 
+// this is stupid but I can't get the polymorphism working with the way the code is now
+//std::vector<MX> Trie::lookupMX(std::string search, Tins::DNS::QueryType type, Node & next, int index) {
+//	std::string label = concatDomain(splitDomain(search));
+//	std::vector<Record> results;
+//
+//	std::cout << "The search label is " << label << std::endl;
+//
+//	// first look for the matching node
+//	std::vector<std::unique_ptr<Edge>> &nEdges = next.getEdges();
+//
+//	if (nEdges.empty()) {
+//		throw "Trie is empty!";
+//	}
+//
+//	std::tuple<int, int> result = findBestMatch(nEdges, label, index);
+//
+//	std::unique_ptr<Edge> &bestMatch = nEdges.at(std::get<1>(result));
+//
+//	if (label == bestMatch->getLabel()) {
+//		// full match
+//		// loop through records for this node and get records that match record type
+//		std::vector<std::unique_ptr<Record>> r;
+//		bestMatch->getTargetNode()->getRecords();
+//
+//		for (const auto& e : bestMatch->getTargetNode()->getRecords()) {
+//			r.push_back(util::make_unique<Record>(*e));
+//		}
+//
+//		for (std::vector<std::unique_ptr<Record>>::const_iterator it = r.begin(); it != r.end(); it++) {
+//			if ((*it)->getType() == type) {
+//				results.push_back((*it)->returnCopy());
+//			}
+//		}
+//		return results;
+//	} else if (!bestMatch->getTargetNode()->isLeaf()) {
+//		Node *n = bestMatch->getTargetNode();
+//		return lookup(search, type, (*n), std::get<0>(result));
+//	} else {
+//		// case to return best match if there is no exact match
+//		std::vector<std::unique_ptr<Record>> r;
+//		bestMatch->getTargetNode()->getRecords();
+//
+//		for (const auto& e : bestMatch->getTargetNode()->getRecords()) {
+//			r.push_back(util::make_unique<Record>(*e));
+//		}
+//
+//		for (std::vector<std::unique_ptr<Record>>::const_iterator it = r.begin(); it != r.end(); it++) {
+//			if ((*it)->getType() == type) {
+//				results.push_back((*it)->returnCopy());
+//			}
+//		}
+//		return results;
+//	}
+//}
+
 void Trie::scanTrie(Node &curr) {
 	std::cout << "Size of records vector for current node: " << curr.getRecords().size() << std::endl;
 	std::cout << "Index of current node: " << curr.getIndex() << std::endl;
@@ -187,6 +243,7 @@ void Trie::scanTrie(Node &curr) {
 		std::cout << "CURRENT RECORD NAME: " << (*itr)->getName() << std::endl;
 		std::cout << "CURRENT CONTENT NAME: " << (*itr)->getContent() << std::endl;
 		std::cout << "CURRENT RECORD TYPE: " << (*itr)->getType() << std::endl;
+		std::cout << "CURRENT OBJECT: " << typeid((*itr)).name() << std::endl;
 	}
 
 	if (!curr.isLeaf()) {

@@ -5,6 +5,7 @@
 #include <cstring>
 #include <tins/tins.h>
 #include <iostream>
+#include <typeinfo>
 
 #include "node.h"
 #include "trie.h"
@@ -31,21 +32,30 @@ bool callback(const Tins::PDU& pdu) {
 
 	if (dns.type() == Tins::DNS::QUERY) {
 		for (const auto& query : dns.queries()) {
-			if (query.query_type() == Tins::DNS::A) {
-				queryName = query.dname();
-				std::transform(queryName.begin(), queryName.end(), queryName.begin(), ::toupper);
-				std::vector<Record> results = t.lookup(queryName, Tins::DNS::A, t.getRoot(), 0);
-				for (std::vector<Record>::iterator it = results.begin(); it != results.end(); it++) {
-					std::cout << (*it).getName() << " " << (*it).getContent() << " " << (*it).getType() << std::endl;
-					dns.add_answer(
-						Tins::DNS::resource(
-							(*it).getName(),
-							(*it).getContent(),
-							Tins::DNS::A,
-							query.query_class(),
-							(*it).getTtl()
-						)
+			queryName = query.dname();
+			std::transform(queryName.begin(), queryName.end(), queryName.begin(), ::toupper);
+			std::vector<Record> results = t.lookup(queryName, query.query_type(), t.getRoot(), 0);
+			for (std::vector<Record>::iterator it = results.begin(); it != results.end(); it++) {
+				std::cout << (*it).getName() << " " << (*it).getContent() << " " << (*it).getPriority() << std::endl;
+				if (query.query_type() == Tins::DNS::MX) {
+					Tins::DNS::resource r = Tins::DNS::resource(
+						(*it).getName(),
+						(*it).getContent(),
+						Tins::DNS::MX,
+						query.query_class(),
+						(*it).getTtl(),
+						(*it).getPriority()
 					);
+					dns.add_answer(r);
+				} else {
+					Tins::DNS::resource r = Tins::DNS::resource(
+						(*it).getName(),
+						(*it).getContent(),
+						query.query_type(),
+						query.query_class(),
+						(*it).getTtl()
+					);
+					dns.add_answer(r);
 				}
 			}
 		}
@@ -85,6 +95,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	std::cout << "Finished populating trie" << std::endl;
+	// t.scanTrie(t.getRoot());
 
 	// listen on port 53 in promiscuous mode
 	Tins::SnifferConfiguration config;
@@ -100,7 +111,6 @@ int main(int argc, char *argv[]) {
 
 	//t.trimTrie(t.getRoot());
 	//std::cout << " ===================== SCANNING TRIE NOW! " << std::endl;
-	//t.scanTrie(t.getRoot());
 
 	return 0;
 }

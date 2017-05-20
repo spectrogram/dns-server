@@ -52,7 +52,7 @@ std::string concatDomain(std::vector<std::string> domain) {
 
 int compareFunc(std::string a, std::string b, int index) {
 	int len;
-	std::cout << "We are comparing " << a << " and " << b << " from index " << index << std::endl;
+	// std::cout << "We are comparing " << a << " and " << b << " from index " << index << std::endl;
 
 	len = std::min(a.length(), b.length());
 
@@ -63,7 +63,7 @@ int compareFunc(std::string a, std::string b, int index) {
 			continue;
 		} else {
 			if (j > 0) {
-				std::cout << "Returning " << j + index << std::endl;
+				// std::cout << "Returning " << j + index << std::endl;
 				return j + index;
 			} else {
 				return 0;
@@ -89,7 +89,7 @@ std::tuple<int, int> findBestMatch(std::vector<std::unique_ptr<Edge>> const &v, 
 			pos = it - v.begin();
 		}
 	}
-	std::cout << "I'm returning " << pos << std::endl;
+	// std::cout << "I'm returning " << pos << std::endl;
 	return std::make_tuple(currMax, pos);
 }
 

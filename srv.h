@@ -16,6 +16,9 @@ public:
 	int setWeight(int newWeight);
 	int setPort(int newPort);
 
+	SRV(std::string n, std::string c, int ttl, int priority, int weight, int port, Tins::DNS::QueryType rec) : Record(n, c, ttl, rec) {};
+	~SRV();
+
 protected:
 	int priority;
 	int weight;
