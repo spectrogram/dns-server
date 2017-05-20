@@ -9,12 +9,14 @@
 #include <typeinfo>
 #include <stdio.h>
 #include <tuple>
+#include <exception>
 
 #include "node.h"
 #include "record.h"
 #include "edge.h"
 #include "trie.h"
 #include "util.h"
+#include "trie_exceptions.h"
 
 extern Trie t;
 
@@ -36,8 +38,10 @@ Node & Trie::getRoot() {
 
 int Trie::addRecord(std::unique_ptr<Record> r, Node & next, int index) {
 	std::string label = concatDomain(splitDomain(r->getName()));
-	std::cout << "CURRENT OBJECT: " << typeid(r).name() << std::endl;
 	std::cout << "Label is " << label << std::endl;
+	if (r->getType() == Tins::DNS::MX) {
+		std::cout << "Priority is " << r->getPriority() << std::endl;
+	}
 
 	std::vector<std::unique_ptr<Edge>> &nEdges = next.getEdges();
 
@@ -130,16 +134,24 @@ std::vector<Record> Trie::lookup(std::string search, Tins::DNS::QueryType type, 
 	std::string label = concatDomain(splitDomain(search));
 	std::vector<Record> results;
 
+	nxdomainException nxdomain;
+
 	std::cout << "The search label is " << label << std::endl;
 
 	// first look for the matching node
 	std::vector<std::unique_ptr<Edge>> &nEdges = next.getEdges();
 
 	if (nEdges.empty()) {
-		throw "Trie is empty!";
+		throw nxdomain;
 	}
 
 	std::tuple<int, int> result = findBestMatch(nEdges, label, index);
+
+	// if num matching chars is 0, something has gone horribly wrong
+	// or there simply aren't any matches in this trie, so throw nxdomain
+	if (std::get<0>(result) == 0) {
+		throw nxdomain;
+	}
 
 	std::unique_ptr<Edge> &bestMatch = nEdges.at(std::get<1>(result));
 
@@ -155,7 +167,13 @@ std::vector<Record> Trie::lookup(std::string search, Tins::DNS::QueryType type, 
 
 		for (std::vector<std::unique_ptr<Record>>::const_iterator it = r.begin(); it != r.end(); it++) {
 			if ((*it)->getType() == type) {
-				results.push_back((*it)->returnCopy());
+				if (type == Tins::DNS::SOA) {
+					results.push_back((*it)->returnSOACopy());
+				} else if (type == Tins::DNS::MX) {
+					results.push_back((*it)->returnMXCopy());
+				} else {
+					results.push_back((*it)->returnCopy());
+				}
 			}
 		}
 		return results;
@@ -173,68 +191,19 @@ std::vector<Record> Trie::lookup(std::string search, Tins::DNS::QueryType type, 
 
 		for (std::vector<std::unique_ptr<Record>>::const_iterator it = r.begin(); it != r.end(); it++) {
 			if ((*it)->getType() == type) {
-				results.push_back((*it)->returnCopy());
+				if (type == Tins::DNS::SOA) {
+					results.push_back((*it)->returnSOACopy());
+				} else if (type == Tins::DNS::MX) {
+					results.push_back((*it)->returnMXCopy());
+				} else {
+					results.push_back((*it)->returnCopy());
+				}
 			}
 		}
 		return results;
 	}
 
 }
-
-// this is stupid but I can't get the polymorphism working with the way the code is now
-//std::vector<MX> Trie::lookupMX(std::string search, Tins::DNS::QueryType type, Node & next, int index) {
-//	std::string label = concatDomain(splitDomain(search));
-//	std::vector<Record> results;
-//
-//	std::cout << "The search label is " << label << std::endl;
-//
-//	// first look for the matching node
-//	std::vector<std::unique_ptr<Edge>> &nEdges = next.getEdges();
-//
-//	if (nEdges.empty()) {
-//		throw "Trie is empty!";
-//	}
-//
-//	std::tuple<int, int> result = findBestMatch(nEdges, label, index);
-//
-//	std::unique_ptr<Edge> &bestMatch = nEdges.at(std::get<1>(result));
-//
-//	if (label == bestMatch->getLabel()) {
-//		// full match
-//		// loop through records for this node and get records that match record type
-//		std::vector<std::unique_ptr<Record>> r;
-//		bestMatch->getTargetNode()->getRecords();
-//
-//		for (const auto& e : bestMatch->getTargetNode()->getRecords()) {
-//			r.push_back(util::make_unique<Record>(*e));
-//		}
-//
-//		for (std::vector<std::unique_ptr<Record>>::const_iterator it = r.begin(); it != r.end(); it++) {
-//			if ((*it)->getType() == type) {
-//				results.push_back((*it)->returnCopy());
-//			}
-//		}
-//		return results;
-//	} else if (!bestMatch->getTargetNode()->isLeaf()) {
-//		Node *n = bestMatch->getTargetNode();
-//		return lookup(search, type, (*n), std::get<0>(result));
-//	} else {
-//		// case to return best match if there is no exact match
-//		std::vector<std::unique_ptr<Record>> r;
-//		bestMatch->getTargetNode()->getRecords();
-//
-//		for (const auto& e : bestMatch->getTargetNode()->getRecords()) {
-//			r.push_back(util::make_unique<Record>(*e));
-//		}
-//
-//		for (std::vector<std::unique_ptr<Record>>::const_iterator it = r.begin(); it != r.end(); it++) {
-//			if ((*it)->getType() == type) {
-//				results.push_back((*it)->returnCopy());
-//			}
-//		}
-//		return results;
-//	}
-//}
 
 void Trie::scanTrie(Node &curr) {
 	std::cout << "Size of records vector for current node: " << curr.getRecords().size() << std::endl;

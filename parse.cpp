@@ -37,7 +37,7 @@ int scanFile(std::string path) {
 
 		std::string n = record[0].substr(0, record[0].size() - 1);
 		std::string c = record[4];
-		int tt = atoi(record[1].c_str());
+		uint32_t tt = std::strtoul(record[1].c_str(), NULL, 0);
 
 		if (record[3].compare("A") == 0) {
 			std::unique_ptr<Record> newRecord (new Record(n, c, tt, Tins::DNS::A));
@@ -75,8 +75,10 @@ int scanFile(std::string path) {
 			if (c.back() == '.') {
 				c = c.substr(0, c.size() - 1);
 			}
-			int priority = atoi(record[4].c_str());
+			uint16_t priority = atoi(record[4].c_str());
+			std::cout << "MX Priority read in as " << priority << std::endl;
 			std::unique_ptr<Record> newRecord(new Record(n, c, tt, priority, Tins::DNS::MX));
+			std::cout << "MX Priority comes out as " << newRecord->getPriority() << std::endl;
 			t.addRecord(std::move(newRecord), t.getRoot(), 0);
 		}
 
@@ -100,11 +102,12 @@ int scanFile(std::string path) {
 				mail = mail.substr(0, mail.size() - 1);
 			}
 
-			int serial = atoi(record[6].c_str());
-			int refresh = atoi(record[7].c_str());
-			int retry = atoi(record[8].c_str());
-			int expire = atoi(record[9].c_str());
-			std::unique_ptr<Record> newRecord(new Record(n, c, tt, mail, serial, refresh, retry, expire, Tins::DNS::SOA));
+			uint32_t serial = std::strtoul(record[6].c_str(), NULL, 0);
+			uint32_t refresh = std::strtoul(record[7].c_str(), NULL, 0);
+			uint32_t retry = std::strtoul(record[8].c_str(), NULL, 0);
+			uint32_t expire = std::strtoul(record[9].c_str(), NULL, 0);
+			uint32_t minttl = std::strtoul(record[10].c_str(), NULL, 0);
+			std::unique_ptr<Record> newRecord(new Record(n, c, tt, mail, serial, refresh, retry, expire, minttl, Tins::DNS::SOA));
 			t.addRecord(std::move(newRecord), t.getRoot(), 0);
 		}
 	}
