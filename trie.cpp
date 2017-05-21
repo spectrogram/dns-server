@@ -38,10 +38,6 @@ Node & Trie::getRoot() {
 
 int Trie::addRecord(std::unique_ptr<Record> r, Node & next, int index) {
 	std::string label = concatDomain(splitDomain(r->getName()));
-	std::cout << "Label is " << label << std::endl;
-	if (r->getType() == Tins::DNS::MX) {
-		std::cout << "Priority is " << r->getPriority() << std::endl;
-	}
 
 	std::vector<std::unique_ptr<Edge>> &nEdges = next.getEdges();
 
@@ -51,7 +47,7 @@ int Trie::addRecord(std::unique_ptr<Record> r, Node & next, int index) {
 		std::unique_ptr<Edge> newEdge(new Edge(label, newNode));
 		newNode->addRecord(std::move(r));
 		next.addEdge(std::move(newEdge));
-		std::cout << "Inserted a new edge and node at " << newNode << std::endl;
+		//std::cout << "Inserted a new edge and node at " << newNode << std::endl;
 		return 0;
 	}
 
@@ -64,7 +60,7 @@ int Trie::addRecord(std::unique_ptr<Record> r, Node & next, int index) {
 		std::unique_ptr<Edge> newEdge(new Edge(label, newNode));
 		newNode->addRecord(std::move(r));
 		next.addEdge(std::move(newEdge));
-		std::cout << "Memory location of newNode is: " << newNode << std::endl;
+		//std::cout << "Memory location of newNode is: " << newNode << std::endl;
 		return 0;
 	}
 
@@ -73,13 +69,13 @@ int Trie::addRecord(std::unique_ptr<Record> r, Node & next, int index) {
 	// we need to double check because... stuff
 	if (label == bestMatch->getLabel()) {
 		// full match, assume leaf?
-		std::cout << "Inserting a record at node " << bestMatch->getTargetNode() << std::endl;
+		//std::cout << "Inserting a record at node " << bestMatch->getTargetNode() << std::endl;
 		bestMatch->getTargetNode()->addRecord(std::move(r));
 		return 0;
 	} else if (bestMatch->getLabel().length() > std::get<0>(result) || bestMatch->getTargetNode()->isLeaf()) {
 		// split this node 
-		std::cout << "Entered split (non leaf)" << std::endl;
-		std::cout << "Result is " << std::get<1>(result) << std::endl;
+		//std::cout << "Entered split (non leaf)" << std::endl;
+		//std::cout << "Result is " << std::get<1>(result) << std::endl;
 
 		int newIndex = compareFunc(bestMatch->getLabel(), label, index);
 
@@ -89,13 +85,13 @@ int Trie::addRecord(std::unique_ptr<Record> r, Node & next, int index) {
 		// create new edge from prefix node to target node
 		// and add to prefix node
 		std::string currEdgeName = bestMatch->getLabel().substr(0, newIndex);
-		std::cout << currEdgeName << " is new prefix edge name with index " << newIndex << std::endl;
+		//std::cout << currEdgeName << " is new prefix edge name with index " << newIndex << std::endl;
 		std::unique_ptr<Edge> newEdge(new Edge(bestMatch->getLabel(), bestMatch->getTargetNode()));
 		newNodePrefix->addEdge(std::move(newEdge));
 
 		// wipe old edge from edges vector of current node
 		std::vector<std::unique_ptr<Edge>>::iterator pos = nEdges.begin() + std::get<1>(result);
-		std::cout << "Label of edge being removed is: " << (*pos)->getLabel() << std::endl;
+		//std::cout << "Label of edge being removed is: " << (*pos)->getLabel() << std::endl;
 		nEdges.erase(pos);
 		//bestMatch.reset();
 
@@ -111,18 +107,18 @@ int Trie::addRecord(std::unique_ptr<Record> r, Node & next, int index) {
 
 		// finally, create new edge from current node to prefix node
 		std::unique_ptr<Edge> newEdge3(new Edge(currEdgeName, newNodePrefix));
-		std::cout << "New edge from curr node to prefix node is: " << newEdge3->getLabel() << std::endl;
+		//std::cout << "New edge from curr node to prefix node is: " << newEdge3->getLabel() << std::endl;
 
 		next.addEdge(std::move(newEdge3));
-		std::cout << "Size of EDGES vector for next node: " << next.getEdges().size() << std::endl;
+		//std::cout << "Size of EDGES vector for next node: " << next.getEdges().size() << std::endl;
 		// std::cout << "New edge from curr node to prefix node is: " << newEdge3->getLabel() << std::endl;
-		for (std::vector<std::unique_ptr<Edge>>::const_iterator itn = next.getEdges().begin(); itn != next.getEdges().end(); itn++) {
-			std::cout << "CURRENT EDGE NAME: " << (*itn)->getLabel() << std::endl;
-		}
+		//for (std::vector<std::unique_ptr<Edge>>::const_iterator itn = next.getEdges().begin(); itn != next.getEdges().end(); itn++) {
+		//	std::cout << "CURRENT EDGE NAME: " << (*itn)->getLabel() << std::endl;
+		//}
 
 	} else {
 		// recurse into the non-leaf node
-		std::cout << "Recursing into non-leaf node " << bestMatch->getLabel() << std::endl;
+		//std::cout << "Recursing into non-leaf node " << bestMatch->getLabel() << std::endl;
 		Node *n = bestMatch->getTargetNode();
 		addRecord(std::move(r), (*n), std::get<0>(result));
 	}
@@ -135,8 +131,6 @@ std::vector<Record> Trie::lookup(std::string search, Tins::DNS::QueryType type, 
 	std::vector<Record> results;
 
 	nxdomainException nxdomain;
-
-	std::cout << "The search label is " << label << std::endl;
 
 	// first look for the matching node
 	std::vector<std::unique_ptr<Edge>> &nEdges = next.getEdges();
@@ -212,7 +206,6 @@ void Trie::scanTrie(Node &curr) {
 		std::cout << "CURRENT RECORD NAME: " << (*itr)->getName() << std::endl;
 		std::cout << "CURRENT CONTENT NAME: " << (*itr)->getContent() << std::endl;
 		std::cout << "CURRENT RECORD TYPE: " << (*itr)->getType() << std::endl;
-		std::cout << "CURRENT OBJECT: " << typeid((*itr)).name() << std::endl;
 	}
 
 	if (!curr.isLeaf()) {

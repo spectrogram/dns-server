@@ -67,13 +67,16 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <RemoteBuildCommandLine>g++ -g ~/projects/fakeblock/test.cpp</RemoteBuildCommandLine>
-    <AdditionalOptions>/std:c++14</AdditionalOptions>
-    <NMakeIncludeSearchPath>C:\Program Files %28x86%29\Microsoft Visual Studio 14.0\libtins\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <RemoteBuildCommandLine>cd $(RemoteRootDir)/$(ProjectName) &amp;&amp; clang++ -std=c++11 -I/usr/include/boost/ -g node.cpp edge.cpp record.cpp util.cpp trie.cpp parse.cpp test.cpp -ltins -lboost_system</RemoteBuildCommandLine>
+    <AdditionalOptions>
+    </AdditionalOptions>
+    <NMakeIncludeSearchPath>C:\local\boost_1_64_0;C:\Program Files %28x86%29\Microsoft Visual Studio 14.0\libtins\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <AdditionalOptions>/std:c++14</AdditionalOptions>
-    <NMakeIncludeSearchPath>C:\Program Files %28x86%29\Microsoft Visual Studio 14.0\libtins\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <AdditionalOptions>
+    </AdditionalOptions>
+    <NMakeIncludeSearchPath>C:\local\boost_1_64_0;C:\Program Files %28x86%29\Microsoft Visual Studio 14.0\libtins\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <RemoteBuildCommandLine>cd $(RemoteRootDir)/$(ProjectName) &amp;&amp; clang++ -std=c++11 -I/usr/include/boost/ -g node.cpp edge.cpp record.cpp util.cpp trie.cpp parse.cpp test.cpp -ltins -lboost_system</RemoteBuildCommandLine>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
     <AdditionalOptions>/std:c++14</AdditionalOptions>
@@ -82,8 +85,10 @@
     <AdditionalOptions>/std:c++14</AdditionalOptions>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
-    <AdditionalOptions>/std:c++14</AdditionalOptions>
-    <NMakeIncludeSearchPath>C:\Program Files %28x86%29\Microsoft Visual Studio 14.0\libtins\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <AdditionalOptions>
+    </AdditionalOptions>
+    <NMakeIncludeSearchPath>C:\local\boost_1_64_0;C:\Program Files %28x86%29\Microsoft Visual Studio 14.0\libtins\include;$(NMakeIncludeSearchPath)</NMakeIncludeSearchPath>
+    <RemoteBuildCommandLine>cd $(RemoteRootDir)/$(ProjectName) &amp;&amp; clang++ -std=c++11 -I/usr/include/boost/ -g node.cpp edge.cpp record.cpp util.cpp trie.cpp parse.cpp test.cpp -ltins -lboost_system</RemoteBuildCommandLine>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
     <AdditionalOptions>/std:c++14</AdditionalOptions>
@@ -91,6 +96,7 @@
   <ItemGroup>
     <ClInclude Include="compareStrings.h" />
     <ClInclude Include="edge.h" />
+    <ClInclude Include="trie_exceptions.h" />
     <ClInclude Include="util.h" />
     <ClInclude Include="record.h" />
     <ClInclude Include="node.h" />

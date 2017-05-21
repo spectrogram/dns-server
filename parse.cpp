@@ -76,9 +76,7 @@ int scanFile(std::string path) {
 				c = c.substr(0, c.size() - 1);
 			}
 			uint16_t priority = atoi(record[4].c_str());
-			std::cout << "MX Priority read in as " << priority << std::endl;
 			std::unique_ptr<Record> newRecord(new Record(n, c, tt, priority, Tins::DNS::MX));
-			std::cout << "MX Priority comes out as " << newRecord->getPriority() << std::endl;
 			t.addRecord(std::move(newRecord), t.getRoot(), 0);
 		}
 
