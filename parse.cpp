@@ -7,6 +7,7 @@
 #include <memory>
 #include <typeinfo>
 #include <boost/algorithm/string.hpp>
+#include <boost/tokenizer.hpp>
 
 #include "node.h"
 #include "trie.h"
@@ -27,8 +28,14 @@ int scanFile(std::string path) {
 
 	std::string currLine;
 
+	std::vector<std::string> record;
 	while (std::getline(input, currLine)) {
-		std::vector<std::string> record;
+
+		boost::tokenizer<boost::escaped_list_separator<char>> tok(currLine, boost::escaped_list_separator<char>(' ', '\"'));
+		for (boost::tokenizer<boost::escaped_list_separator<char>>::iterator beg = tok.begin(); beg != tok.end(); ++beg) {
+			std::cout << *beg << "\n";
+			return 0;
+		}
 
 		record = split(currLine, ' ');
 
