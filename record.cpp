@@ -17,7 +17,6 @@ Tins::DNS::QueryType Record::getType() {
 }
 
 uint16_t Record::getPriority() {
-	std::cout << "Returning: " << priority << std::endl;
 	return priority;
 }
 

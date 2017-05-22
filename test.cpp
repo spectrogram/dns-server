@@ -130,7 +130,6 @@ void server() {
 								(*it).getTtl()
 							);
 							r.data(s);
-							std::cout << r.data() << std::endl;
 							dns.add_answer(r);
 						} else {
 							Tins::DNS::resource r = Tins::DNS::resource(
@@ -193,7 +192,6 @@ int main(int argc, char *argv[]) {
 			closedir(pDir);
 		}
 	} else if (std::string(argv[1]) == "zone") {
-		std::cout << "Entered conditional" << std::endl;
 		scanZoneFile(std::string(argv[2]));
 		return 0;
 	} else {
