@@ -34,8 +34,8 @@ int scanFile(std::string path) {
 		boost::tokenizer<boost::escaped_list_separator<char>> tok(currLine, boost::escaped_list_separator<char>('\\', ' ', '\"'));
 		for (boost::tokenizer<boost::escaped_list_separator<char>>::iterator beg = tok.begin(); beg != tok.end(); ++beg) {
 			std::cout << *beg << "\n";
-			return 0;
 		}
+		return 0;
 
 		record = split(currLine, ' ');
 
