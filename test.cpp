@@ -60,9 +60,8 @@ void server() {
 						Tins::PDU::serialization_type s = dns.serialize();
 						std::vector<uint8_t> data;
 
-						// uint16_t to uint8_t code kindly provided by James Bott
-						uint8_t bHi = (unsigned char)(s.size() / 256);
-						uint8_t bLo = (unsigned char)(s.size() % 256);
+						uint8_t bHi = s.size() & 0xff;
+						uint8_t bLo = (s.size() >> 8);
 
 						data.push_back(bHi);
 						data.push_back(bLo);
@@ -76,9 +75,32 @@ void server() {
 						e.what();
 					}
 
-					// no results, so return empty answer
+					// no results, so return empty answer with SOA record if it exists
 					// rcode = 0 (NOERROR) with 0 answers
 					if (results.size() == 0) {
+						results = t.lookup(queryName, Tins::DNS::SOA, t.getRoot(), 0);
+
+						for (std::vector<Record>::iterator it = results.begin(); it != results.end(); it++) {
+							Tins::DNS::soa_record s = Tins::DNS::soa_record(
+								(*it).getContent(),
+								(*it).getMail(),
+								(*it).getSerial(),
+								(*it).getRefresh(),
+								(*it).getRetry(),
+								(*it).getExpire(),
+								(*it).getMinTtl()
+							);
+							Tins::DNS::resource r = Tins::DNS::resource(
+								(*it).getName(),
+								(*it).getContent(),
+								Tins::DNS::SOA,
+								query.query_class(),
+								(*it).getTtl()
+							);
+							r.data(s);
+							dns.add_answer(r);
+						}
+
 						dns.type(Tins::DNS::RESPONSE);
 						dns.recursion_available(0);
 						dns.rcode(0);
@@ -86,9 +108,8 @@ void server() {
 
 						std::vector<uint8_t> data;
 
-						// uint16_t to uint8_t code kindly provided by James Bott
-						uint8_t bHi = (unsigned char)(s.size() / 256);
-						uint8_t bLo = (unsigned char)(s.size() % 256);
+						uint8_t bHi = s.size() & 0xff;
+						uint8_t bLo = (s.size() >> 8);
 
 						data.push_back(bHi);
 						data.push_back(bLo);
@@ -149,9 +170,8 @@ void server() {
 						Tins::PDU::serialization_type s = dns.serialize();
 						std::vector<uint8_t> data;
 
-						// uint16_t to uint8_t code kindly provided by James Bott
-						uint8_t bHi = (unsigned char)(s.size() / 256);
-						uint8_t bLo = (unsigned char)(s.size() % 256);
+						uint8_t bHi = s.size() & 0xff;
+						uint8_t bLo = (s.size() >> 8);
 
 						data.push_back(bHi);
 						data.push_back(bLo);
