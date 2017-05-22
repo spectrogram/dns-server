@@ -185,9 +185,9 @@ int main(int argc, char *argv[]) {
 
 		if (pDir = opendir(argv[2])) {
 			while (entry = readdir(pDir)) {
-				if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
+				if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
 					fullpath = std::string(argv[2]) + std::string(entry->d_name);
-				std::cout << fullpath << "\n";
+				}
 				scanFile(fullpath);
 			}
 			closedir(pDir);
