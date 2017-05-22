@@ -19,6 +19,8 @@ using boost::asio::ip::tcp;
 Trie t = Trie();
 
 int scanFile(std::string path);
+int scanZoneFile(std::string path);
+
 Tins::PacketSender sender;
 
 
@@ -172,26 +174,34 @@ void server() {
 
 int main(int argc, char *argv[]) {
 	if (argc < 2) {
-		std::cerr << "Usage: " << argv[0] << " <directory path> <interface> " << std::endl;
+		std::cerr << "Usage: " << argv[0] << "<zone/text> <path>" << std::endl;
 		return 1;
 	}
 
-	DIR *pDir;
-	struct dirent *entry;
-	std::string fullpath;
+	if (std::string(argv[1]) == "text") {
+		DIR *pDir;
+		struct dirent *entry;
+		std::string fullpath;
 
-	if (pDir = opendir(argv[1])) {
-		while (entry = readdir(pDir)) {
-			if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
-				fullpath = std::string(argv[1]) + std::string(entry->d_name);
+		if (pDir = opendir(argv[2])) {
+			while (entry = readdir(pDir)) {
+				if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0)
+					fullpath = std::string(argv[2]) + std::string(entry->d_name);
 				std::cout << fullpath << "\n";
 				scanFile(fullpath);
+			}
+			closedir(pDir);
 		}
-		closedir(pDir);
+	} else if (std::string(argv[1]) == "zone") {
+		std::cout << "Entered conditional" << std::endl;
+		scanZoneFile(std::string(argv[2]));
+		return 0;
+	} else {
+		return 1;
 	}
 
-	// t.scanTrie(t.getRoot());
-	t.trimTrie(t.getRoot());
+	
+	// t.trimTrie(t.getRoot());
 
 	server();
 

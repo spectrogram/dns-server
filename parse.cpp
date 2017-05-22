@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <memory>
 #include <typeinfo>
+#include <boost/algorithm/string.hpp>
 
 #include "node.h"
 #include "trie.h"
@@ -15,6 +16,7 @@
 extern Trie t;
 
 int scanFile(std::string path);
+int scanZoneFile(std::string path);
 std::vector<std::string> splitDomain(std::string domain);
 std::vector<std::string> split(const std::string &s, char delim);
 std::string concatDomain(std::vector<std::string> domain);
@@ -25,7 +27,6 @@ int scanFile(std::string path) {
 
 	std::string currLine;
 
-	Record *temp;
 	while (std::getline(input, currLine)) {
 		std::vector<std::string> record;
 
@@ -113,3 +114,65 @@ int scanFile(std::string path) {
 	return 0;
 }
 
+
+// special function for performance testing - load Verisign's com/net rrset
+int scanZoneFile(std::string path) {
+	std::ifstream input(path.c_str());
+
+	std::string currLine;
+	
+	while (std::getline(input, currLine)) {
+		std::vector<std::string> record;
+		boost::split(record, currLine, boost::is_any_of(" "));
+
+		if (record.size() > 3) {
+			std::cout << "Skipping" << std::endl;
+			continue;
+		}
+
+		// these are A records for nameservers
+		if (record[1] == "A") {
+			std::string n = record[0];
+			n.append(".NET");
+
+			std::string c = record[2];
+
+			std::cout << "Adding A record for " << n << std::endl;
+			std::unique_ptr<Record> newRecord(new Record(n, c, 86400, Tins::DNS::A));
+			t.addRecord(std::move(newRecord), t.getRoot(), 0);
+		}
+
+		// these are AAAA record for nameservers
+		if (record[1] == "AAAA") {
+			std::string n = record[0];
+			n.append(".NET");
+
+			std::string c = record[2];
+
+			std::cout << "Adding A record for " << n << std::endl;
+			std::unique_ptr<Record> newRecord(new Record(n, c, 86400, Tins::DNS::AAAA));
+			t.addRecord(std::move(newRecord), t.getRoot(), 0);
+		}
+
+		// these are NS records 
+		if (record[1] == "NS") {
+			std::string n = record[0];
+			n.append(".NET");
+
+			std::string c = record[2];
+			boost::trim_right(c);
+			if (c.back() != '.') {
+				c.append(".NET");
+			}
+
+			std::cout << "Adding NS record for " << n << std::endl;
+			std::unique_ptr<Record> newRecord(new Record(n, c, 86400, Tins::DNS::NS));
+			t.addRecord(std::move(newRecord), t.getRoot(), 0);
+		}
+		
+		record.clear();
+		std::vector<std::string>().swap(record);
+	}
+
+	return 0;
+}
