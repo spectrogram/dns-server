@@ -28,7 +28,7 @@ void server() {
 	try {
 		boost::asio::io_service io_service;
 
-		tcp::acceptor acceptor(io_service, tcp::endpoint(boost::asio::ip::address_v4::from_string("192.168.1.32"), 53));
+		tcp::acceptor acceptor(io_service, tcp::endpoint(boost::asio::ip::tcp::v4(), 53));
 
 		for (;;) {
 			tcp::socket socket(io_service);
