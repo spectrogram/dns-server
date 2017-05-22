@@ -117,55 +117,55 @@ int scanFile(std::string path) {
 
 // special function for performance testing - load Verisign's com/net rrset
 int scanZoneFile(std::string path) {
+	char buffer[16384];
 	std::ifstream input(path.c_str());
+	input.rdbuf()->pubsetbuf(buffer, 16384);
 
 	std::string currLine;
 	
+	std::vector<std::string> record;
+	std::string n;
+	std::string c;
 	while (std::getline(input, currLine)) {
-		std::vector<std::string> record;
 		boost::split(record, currLine, boost::is_any_of(" "));
 
 		if (record.size() > 3) {
-			std::cout << "Skipping" << std::endl;
 			continue;
 		}
 
 		// these are A records for nameservers
 		if (record[1] == "A") {
-			std::string n = record[0];
+			n = record[0];
 			n.append(".NET");
 
-			std::string c = record[2];
+			c = record[2];
 
-			std::cout << "Adding A record for " << n << std::endl;
 			std::unique_ptr<Record> newRecord(new Record(n, c, 86400, Tins::DNS::A));
 			t.addRecord(std::move(newRecord), t.getRoot(), 0);
 		}
 
 		// these are AAAA record for nameservers
 		if (record[1] == "AAAA") {
-			std::string n = record[0];
+			n = record[0];
 			n.append(".NET");
 
-			std::string c = record[2];
+			c = record[2];
 
-			std::cout << "Adding A record for " << n << std::endl;
 			std::unique_ptr<Record> newRecord(new Record(n, c, 86400, Tins::DNS::AAAA));
 			t.addRecord(std::move(newRecord), t.getRoot(), 0);
 		}
 
 		// these are NS records 
 		if (record[1] == "NS") {
-			std::string n = record[0];
+			n = record[0];
 			n.append(".NET");
 
-			std::string c = record[2];
+			c = record[2];
 			boost::trim_right(c);
 			if (c.back() != '.') {
 				c.append(".NET");
 			}
 
-			std::cout << "Adding NS record for " << n << std::endl;
 			std::unique_ptr<Record> newRecord(new Record(n, c, 86400, Tins::DNS::NS));
 			t.addRecord(std::move(newRecord), t.getRoot(), 0);
 		}
@@ -173,6 +173,6 @@ int scanZoneFile(std::string path) {
 		record.clear();
 		std::vector<std::string>().swap(record);
 	}
-
+	std::cout << "Finished.\n";
 	return 0;
 }
