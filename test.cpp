@@ -60,8 +60,8 @@ void server() {
 						Tins::PDU::serialization_type s = dns.serialize();
 						std::vector<uint8_t> data;
 
-						uint8_t bHi = s.size() & 0xff;
-						uint8_t bLo = (s.size() >> 8);
+						uint8_t bLo = s.size() & 0xff;
+						uint8_t bHi = (s.size() >> 8);
 
 						data.push_back(bHi);
 						data.push_back(bLo);
@@ -108,8 +108,8 @@ void server() {
 
 						std::vector<uint8_t> data;
 
-						uint8_t bHi = s.size() & 0xff;
-						uint8_t bLo = (s.size() >> 8);
+						uint8_t bLo = s.size() & 0xff;
+						uint8_t bHi = (s.size() >> 8);
 
 						data.push_back(bHi);
 						data.push_back(bLo);
@@ -170,8 +170,8 @@ void server() {
 						Tins::PDU::serialization_type s = dns.serialize();
 						std::vector<uint8_t> data;
 
-						uint8_t bHi = s.size() & 0xff;
-						uint8_t bLo = (s.size() >> 8);
+						uint8_t bLo = s.size() & 0xff;
+						uint8_t bHi = (s.size() >> 8);
 
 						data.push_back(bHi);
 						data.push_back(bLo);
