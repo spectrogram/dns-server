@@ -48,6 +48,28 @@ void server() {
 					queryName = query.dname();
 					std::transform(queryName.begin(), queryName.end(), queryName.begin(), ::toupper);
 
+					// having a domain name with less than 3 characters in it is impossible, so return NXDOMAIN
+					if (query.dname().size() < 3) {
+						dns.type(Tins::DNS::RESPONSE);
+						dns.recursion_available(0);
+						dns.rcode(3);
+
+						Tins::PDU::serialization_type s = dns.serialize();
+						std::vector<uint8_t> data;
+
+						uint8_t bLo = s.size() & 0xff;
+						uint8_t bHi = (s.size() >> 8);
+
+						data.push_back(bHi);
+						data.push_back(bLo);
+
+						data.insert(std::end(data), std::begin(s), std::end(s));
+
+						boost::system::error_code ignored_error;
+
+						boost::asio::write(socket, boost::asio::buffer(data), boost::asio::transfer_all(), ignored_error);
+					}
+
 					try {
 						results = t.lookup(queryName, query.query_type(), t.getRoot(), 0);
 					} catch (nxdomainException &e) {
@@ -201,11 +223,12 @@ int main(int argc, char *argv[]) {
 		DIR *pDir;
 		struct dirent *entry;
 		std::string fullpath;
+		std::string dir(argv[2]);
 
 		if (pDir = opendir(argv[2])) {
 			while (entry = readdir(pDir)) {
 				if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
-					fullpath = std::string(argv[2]) + std::string(entry->d_name);
+					fullpath = dir + std::string(entry->d_name);
 				}
 				scanFile(fullpath);
 			}

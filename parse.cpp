@@ -29,10 +29,15 @@ int scanFile(std::string path) {
 	std::string currLine;
 
 	std::vector<std::string> record;
+	std::cout << currLine << "\n";
 	while (std::getline(input, currLine)) {
 
-		boost::tokenizer<boost::escaped_list_separator<char>> tok(currLine, boost::escaped_list_separator<char>('\\', ' ', '\"'));
-		record.assign(tok.begin(), tok.end());
+		try {
+			boost::tokenizer<boost::escaped_list_separator<char>> tok(currLine, boost::escaped_list_separator<char>('\\', ' ', '\"'));
+			record.assign(tok.begin(), tok.end());
+		} catch (boost::escaped_list_error e) {
+			continue;
+		}
 
 		if (record.size() < 4) {
 			return 1;
