@@ -29,7 +29,6 @@ int scanFile(std::string path) {
 	std::string currLine;
 
 	std::vector<std::string> record;
-	std::cout << currLine << "\n";
 	while (std::getline(input, currLine)) {
 
 		try {
