@@ -221,7 +221,9 @@ int main(int argc, char *argv[]) {
 	
 	// t.trimTrie(t.getRoot());
 
-	server();
+	while (1) {
+		server();
+	}
 
 	return 0;
 }
