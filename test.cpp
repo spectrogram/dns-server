@@ -49,7 +49,7 @@ void server() {
 					std::transform(queryName.begin(), queryName.end(), queryName.begin(), ::toupper);
 
 					// having a domain name with less than 3 characters in it is impossible, so return NXDOMAIN
-					if (query.dname().size() < 3) {
+					if (queryName.length() < 3) {
 						dns.type(Tins::DNS::RESPONSE);
 						dns.recursion_available(0);
 						dns.rcode(3);
