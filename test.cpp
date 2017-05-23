@@ -8,6 +8,8 @@
 #include <typeinfo>
 #include <exception>
 #include <boost/asio.hpp>
+#include <chrono>
+#include <ctime>
 
 #include "node.h"
 #include "trie.h"
@@ -214,10 +216,14 @@ void server() {
 }
 
 int main(int argc, char *argv[]) {
+	std::chrono::time_point<std::chrono::system_clock> start, end;
 	if (argc < 2) {
 		std::cerr << "Usage: " << argv[0] << " <zone/text> <path>" << std::endl;
 		return 1;
 	}
+
+	// get the time now before processing starts
+	start = std::chrono::system_clock::now();
 
 	if (std::string(argv[1]) == "text") {
 		DIR *pDir;
@@ -238,11 +244,17 @@ int main(int argc, char *argv[]) {
 		scanZoneFile(std::string(argv[2]));
 		return 0;
 	} else {
+		std::cerr << "Usage: " << argv[0] << " <zone/text> <path>" << std::endl;
 		return 1;
 	}
 
+	// get time now after processing
+	end = std::chrono::system_clock::now();
 	
-	// t.trimTrie(t.getRoot());
+	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+	std::chrono::duration<double> elapsed_seconds = end - start;
+
+	std::cout << "Finished processing at " << std::ctime(&end_time) << "\nElapsed time: " << elapsed_seconds.count() << "s\n";
 
 	while (1) {
 		server();
