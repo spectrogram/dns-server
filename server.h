@@ -32,7 +32,12 @@ public:
 		uint8_t charbuf[1200];
 		int readbytes = socket_.receive(boost::asio::buffer(charbuf, 1200));
 
-		Tins::DNS dns(charbuf + 2, readbytes - 2);
+		Tins::DNS dns;
+		try {
+			dns = Tins::DNS(charbuf + 2, readbytes - 2);
+		} catch (Tins::invalid_interface &e) {
+			std::cout << "it was here...\n";
+		}
 
 		if (dns.type() == Tins::DNS::QUERY) {
 			std::string queryName;
@@ -159,7 +164,7 @@ public:
 
 				boost::asio::async_write(socket_, boost::asio::buffer(data), boost::bind(&tcp_connection::handle_write, shared_from_this(), boost::asio::placeholders::error, boost::asio::placeholders::bytes_transferred));
 			}
-		}
+		} 
 }
 
 private:
