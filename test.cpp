@@ -242,7 +242,6 @@ int main(int argc, char *argv[]) {
 		}
 	} else if (std::string(argv[1]) == "zone") {
 		scanZoneFile(std::string(argv[2]));
-		return 0;
 	} else {
 		std::cerr << "Usage: " << argv[0] << " <zone/text> <path>" << std::endl;
 		return 1;
