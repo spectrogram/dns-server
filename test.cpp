@@ -220,13 +220,14 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Finished processing at " << std::ctime(&end_time) << "\nElapsed time: " << elapsed_seconds.count() << "s\n";
 	
-
-	try {
-		boost::asio::io_service io_service;
-		tcp_server server(io_service);
-		io_service.run();
-	} catch (std::exception& e) {
-		std::cerr << e.what() << std::endl;
+	while (1) {
+		try {
+			boost::asio::io_service io_service;
+			tcp_server server(io_service);
+			io_service.run();
+		} catch (std::exception& e) {
+			std::cerr << e.what() << std::endl;
+		}
 	}
 
 
