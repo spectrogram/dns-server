@@ -255,7 +255,7 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Finished processing at " << std::ctime(&end_time) << "\nElapsed time: " << elapsed_seconds.count() << "s\n";
 	
-        while (1) {
+    while (1) {
 		server();
 	}
 
