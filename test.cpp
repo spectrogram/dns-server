@@ -15,6 +15,7 @@
 #include "trie.h"
 #include "record.h"
 #include "trie_exceptions.h"
+#include "server.h"
 
 using boost::asio::ip::tcp;
 
@@ -219,9 +220,15 @@ int main(int argc, char *argv[]) {
 
 	std::cout << "Finished processing at " << std::ctime(&end_time) << "\nElapsed time: " << elapsed_seconds.count() << "s\n";
 	
-    while (1) {
-		server();
+
+	try {
+		boost::asio::io_service io_service;
+		tcp_server server(io_service);
+		io_service.run();
+	} catch (std::exception& e) {
+		std::cerr << e.what() << std::endl;
 	}
+
 
 	return 0;
 }
