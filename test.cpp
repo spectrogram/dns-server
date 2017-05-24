@@ -242,7 +242,6 @@ int main(int argc, char *argv[]) {
 		}
 	} else if (std::string(argv[1]) == "zone") {
 		scanZoneFile(std::string(argv[2]));
-		return 0;
 	} else {
 		std::cerr << "Usage: " << argv[0] << " <zone/text> <path>" << std::endl;
 		return 1;
@@ -255,8 +254,8 @@ int main(int argc, char *argv[]) {
 	std::chrono::duration<double> elapsed_seconds = end - start;
 
 	std::cout << "Finished processing at " << std::ctime(&end_time) << "\nElapsed time: " << elapsed_seconds.count() << "s\n";
-
-	while (1) {
+	
+        while (1) {
 		server();
 	}
 
