@@ -170,7 +170,9 @@ int scanZoneFile(std::string path) {
 			boost::trim_right(c);
 			if (c.back() != '.') {
 				c.append(".NET");
-			}
+			} else {
+                                c.pop_back();
+                        }
 
 			std::unique_ptr<Record> newRecord(new Record(n, c, 86400, Tins::DNS::NS));
 			t.addRecord(std::move(newRecord), t.getRoot(), 0);
