@@ -87,15 +87,6 @@ int scanFile(std::string path) {
 			t.addRecord(std::move(newRecord), t.getRoot(), 0);
 		}
 
-		//if (record[3].compare("SRV") == 0) {
-		//	c = record[7];
-		//	int priority = atoi(record[4].c_str());
-		//	int weight = atoi(record[5].c_str());
-		//	int port = atoi(record[6].c_str());
-		//	std::unique_ptr<Record> newRecord(new Record(n, c, tt, priority, weight, port, Tins::DNS::SRV));
-		//	t.addRecord(std::move(newRecord), t.getRoot(), 0);
-		//}
-
 		if (record[3].compare("SOA") == 0) {
 			c = record[4];
 			if (c.back() == '.') {

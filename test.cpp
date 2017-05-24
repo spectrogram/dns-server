@@ -55,46 +55,22 @@ void server() {
 						dns.type(Tins::DNS::RESPONSE);
 						dns.recursion_available(0);
 						dns.rcode(3);
+					}
 
-						Tins::PDU::serialization_type s = dns.serialize();
-						std::vector<uint8_t> data;
-
-						uint8_t bLo = s.size() & 0xff;
-						uint8_t bHi = (s.size() >> 8);
-
-						data.push_back(bHi);
-						data.push_back(bLo);
-
-						data.insert(std::end(data), std::begin(s), std::end(s));
-
-						boost::system::error_code ignored_error;
-
-						boost::asio::write(socket, boost::asio::buffer(data), boost::asio::transfer_all(), ignored_error);
+					// this program does not support SRV records - return NotImp
+					if (query.query_type() == Tins::DNS::SRV) {
+						dns.type(Tins::DNS::RESPONSE);
+						dns.recursion_available(0);
+						dns.rcode(4);
 					}
 
 					try {
 						results = t.lookup(queryName, query.query_type(), t.getRoot(), 0);
 					} catch (nxdomainException &e) {
 						// send a response with the NXDOMAIN rcode
-
 						dns.type(Tins::DNS::RESPONSE);
 						dns.recursion_available(0);
 						dns.rcode(3);
-
-						Tins::PDU::serialization_type s = dns.serialize();
-						std::vector<uint8_t> data;
-
-						uint8_t bLo = s.size() & 0xff;
-						uint8_t bHi = (s.size() >> 8);
-
-						data.push_back(bHi);
-						data.push_back(bLo);
-
-						data.insert(std::end(data), std::begin(s), std::end(s));
-
-						boost::system::error_code ignored_error;
-
-						boost::asio::write(socket, boost::asio::buffer(data), boost::asio::transfer_all(), ignored_error);
 					} catch (std::exception &e) {
 						e.what();
 					}
@@ -122,27 +98,13 @@ void server() {
 								(*it).getTtl()
 							);
 							r.data(s);
-							dns.add_answer(r);
+							dns.add_authority(r);
+							// dns.authority_count();
 						}
 
 						dns.type(Tins::DNS::RESPONSE);
 						dns.recursion_available(0);
 						dns.rcode(0);
-						Tins::PDU::serialization_type s = dns.serialize();
-
-						std::vector<uint8_t> data;
-
-						uint8_t bLo = s.size() & 0xff;
-						uint8_t bHi = (s.size() >> 8);
-
-						data.push_back(bHi);
-						data.push_back(bLo);
-
-						data.insert(std::end(data), std::begin(s), std::end(s));
-
-						boost::system::error_code ignored_error;
-
-						boost::asio::write(socket, boost::asio::buffer(data), boost::asio::transfer_all(), ignored_error);
 					}
 
 					for (std::vector<Record>::iterator it = results.begin(); it != results.end(); it++) {
@@ -191,21 +153,23 @@ void server() {
 					if (dns.answers_count() > 0) {
 						dns.type(Tins::DNS::RESPONSE);
 						dns.recursion_available(0);
-						Tins::PDU::serialization_type s = dns.serialize();
-						std::vector<uint8_t> data;
-
-						uint8_t bLo = s.size() & 0xff;
-						uint8_t bHi = (s.size() >> 8);
-
-						data.push_back(bHi);
-						data.push_back(bLo);
-
-						data.insert(std::end(data), std::begin(s), std::end(s));
-
-						boost::system::error_code ignored_error;
-
-						boost::asio::write(socket, boost::asio::buffer(data), boost::asio::transfer_all(), ignored_error);
 					}
+
+					Tins::PDU::serialization_type s = dns.serialize();
+					std::vector<uint8_t> data;
+
+					uint8_t bLo = s.size() & 0xff;
+					uint8_t bHi = (s.size() >> 8);
+
+					data.push_back(bHi);
+					data.push_back(bLo);
+
+					data.insert(std::end(data), std::begin(s), std::end(s));
+
+					boost::system::error_code ignored_error;
+
+					boost::asio::write(socket, boost::asio::buffer(data), boost::asio::transfer_all(), ignored_error);
+
 				}
 			}
 
