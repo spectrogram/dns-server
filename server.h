@@ -178,7 +178,7 @@ private:
 class tcp_server {
 public:
 	tcp_server(boost::asio::io_service& io_service)
-		: acceptor_(io_service, tcp::endpoint(tcp::v4(), 13)) {
+		: acceptor_(io_service, tcp::endpoint(tcp::v4(), 53)) {
 		start_accept();
 	}
 
