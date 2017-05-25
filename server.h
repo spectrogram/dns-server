@@ -98,48 +98,48 @@ public:
 					dns.type(Tins::DNS::RESPONSE);
 					dns.recursion_available(0);
 					dns.rcode(0);
-				}
-
-				for (std::vector<Record>::iterator it = results.begin(); it != results.end(); it++) {
-					if (query.query_type() == Tins::DNS::MX) {
-						Tins::DNS::resource r = Tins::DNS::resource(
-							(*it).getName(),
-							(*it).getContent(),
-							Tins::DNS::MX,
-							query.query_class(),
-							(*it).getTtl(),
-							(*it).getPriority()
-						);
-						dns.add_answer(r);
-					} else if (query.query_type() == Tins::DNS::SOA) {
-						// create an SOA record first to get the data out of it
-						Tins::DNS::soa_record s = Tins::DNS::soa_record(
-							(*it).getContent(),
-							(*it).getMail(),
-							(*it).getSerial(),
-							(*it).getRefresh(),
-							(*it).getRetry(),
-							(*it).getExpire(),
-							(*it).getMinTtl()
-						);
-						Tins::DNS::resource r = Tins::DNS::resource(
-							(*it).getName(),
-							(*it).getContent(),
-							Tins::DNS::SOA,
-							query.query_class(),
-							(*it).getTtl()
-						);
-						r.data(s);
-						dns.add_answer(r);
-					} else {
-						Tins::DNS::resource r = Tins::DNS::resource(
-							(*it).getName(),
-							(*it).getContent(),
-							query.query_type(),
-							query.query_class(),
-							(*it).getTtl()
-						);
-						dns.add_answer(r);
+				} else {
+					for (std::vector<Record>::iterator it = results.begin(); it != results.end(); it++) {
+						if (query.query_type() == Tins::DNS::MX) {
+							Tins::DNS::resource r = Tins::DNS::resource(
+								(*it).getName(),
+								(*it).getContent(),
+								Tins::DNS::MX,
+								query.query_class(),
+								(*it).getTtl(),
+								(*it).getPriority()
+							);
+							dns.add_answer(r);
+						} else if (query.query_type() == Tins::DNS::SOA) {
+							// create an SOA record first to get the data out of it
+							Tins::DNS::soa_record s = Tins::DNS::soa_record(
+								(*it).getContent(),
+								(*it).getMail(),
+								(*it).getSerial(),
+								(*it).getRefresh(),
+								(*it).getRetry(),
+								(*it).getExpire(),
+								(*it).getMinTtl()
+							);
+							Tins::DNS::resource r = Tins::DNS::resource(
+								(*it).getName(),
+								(*it).getContent(),
+								Tins::DNS::SOA,
+								query.query_class(),
+								(*it).getTtl()
+							);
+							r.data(s);
+							dns.add_answer(r);
+						} else {
+							Tins::DNS::resource r = Tins::DNS::resource(
+								(*it).getName(),
+								(*it).getContent(),
+								query.query_type(),
+								query.query_class(),
+								(*it).getTtl()
+							);
+							dns.add_answer(r);
+						}
 					}
 				}
 
