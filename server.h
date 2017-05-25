@@ -40,7 +40,6 @@ public:
 			std::vector<Record> results;
 			for (const auto& query : dns.queries()) {
 				queryName = query.dname();
-				std::cout << queryName << "\n";
 				std::transform(queryName.begin(), queryName.end(), queryName.begin(), ::toupper);
 
 				// having a domain name with less than 3 characters in it is impossible, so return NXDOMAIN
