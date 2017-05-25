@@ -33,17 +33,14 @@ public:
 		int readbytes = socket_.receive(boost::asio::buffer(charbuf, 1200));
 
 		Tins::DNS dns;
-		try {
-			dns = Tins::DNS(charbuf + 2, readbytes - 2);
-		} catch (Tins::invalid_address &e) {
-			std::cout << "it was here...\n";
-		}
+		dns = Tins::DNS(charbuf + 2, readbytes - 2);
 
 		if (dns.type() == Tins::DNS::QUERY) {
 			std::string queryName;
 			std::vector<Record> results;
 			for (const auto& query : dns.queries()) {
 				queryName = query.dname();
+				std::cout << queryName << "\n";
 				std::transform(queryName.begin(), queryName.end(), queryName.begin(), ::toupper);
 
 				// having a domain name with less than 3 characters in it is impossible, so return NXDOMAIN
