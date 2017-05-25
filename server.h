@@ -35,7 +35,7 @@ public:
 		Tins::DNS dns;
 		try {
 			dns = Tins::DNS(charbuf + 2, readbytes - 2);
-		} catch (Tins::invalid_interface &e) {
+		} catch (Tins::invalid_address &e) {
 			std::cout << "it was here...\n";
 		}
 
