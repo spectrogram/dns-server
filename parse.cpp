@@ -30,7 +30,7 @@ int scanFile(std::string path) {
 
 	std::vector<std::string> record;
 	while (std::getline(input, currLine)) {
-
+                std::transform(currLine.begin(), currLine.end(), currLine.begin(), ::toupper);
 		try {
 			boost::tokenizer<boost::escaped_list_separator<char>> tok(currLine, boost::escaped_list_separator<char>('\\', ' ', '\"'));
 			record.assign(tok.begin(), tok.end());
